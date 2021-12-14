@@ -1,24 +1,23 @@
 pipeline {
     environment{
-        registry='https://github.com/nandita162/git-jenkins-demo.git'
+        image='nandita162/git-jenkins-demo'
         registrycred='dockerhub'
         app=''
         pushreg='https://registry.hub.docker.com'
-        dockerhubid='nanditapal'
     }
-    agent any
+    agent local
     stages {
         stage('Build') {
             steps {
                 script{
-                    app=docker.build registry + ":$BUILD_NUMBER" 
+                    app=docker.build image + ":$BUILD_NUMBER" 
                 }
             }
         }
         stage('Push'){
             steps{
                 script{
-                    docker.withRegistry(pushreg, dockerhubid){
+                    docker.withRegistry(pushreg, dockerhub){
                     app.push()
                 }
             }
