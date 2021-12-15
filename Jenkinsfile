@@ -1,5 +1,6 @@
-pipeline {
-    environment{
+node{
+    def app{
+        environment{
         image='nanditapal/git-jenkins-demo'
         registrycred='dockerhub'
         app=''
@@ -26,5 +27,6 @@ pipeline {
             }
             }
         }
+    }
     }
 }
