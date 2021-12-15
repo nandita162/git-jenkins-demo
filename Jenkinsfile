@@ -1,11 +1,10 @@
 node{
-    def demo-app
-        environment{
-            image='nanditapal/git-jenkins-demo'
-            registrycred='dockerhub'
-            app=''
-            pushreg='https://registry.hub.docker.com'
-        }
+    environment{
+        image='nanditapal/git-jenkins-demo'
+        registrycred='dockerhub'
+        app=''
+        pushreg='https://registry.hub.docker.com'
+    }
     agent any
     stage('Clone repo'){
         checkout scm
@@ -18,11 +17,8 @@ node{
         }
     }
     stage('Push'){
-        steps{
-            script{
-                docker.withRegistry('https://registry.hub.docker.com', 'dockerhub'){
-                app.push()
-            }
+        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub'){
+            app.push()
         }
     }
 }
