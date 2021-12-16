@@ -1,10 +1,10 @@
 pipeline {
+    agent any
     environment{
-        image=''
         app=''
+        image=''
         pushreg='nanditapal/git-jenkins-demo'
     }
-    agent any
     stages {
         stage('Git clone') {
             steps{
@@ -15,17 +15,16 @@ pipeline {
         stage('Build') {
             steps {
                 script{
-                    app=docker.build pushreg+":latest"
+                    image=docker.build pushreg+":latest"
                 }
             }
         }
         stage('Push'){
             steps{
                 script{
-                    docker.withRegistry('','nanditapal'){
-                        app.push()
-                        //sh 'docker tag git-jenkins:latest nanditapal/git-jenkins-demo:latest'
-                        //sh 'docker push nanditapal/git-jenkins-demo:latest'
+                    docker.withRegistry('','dockerhub'){
+                        image.push()
+                        image.pull()
                     }
                 }
             }

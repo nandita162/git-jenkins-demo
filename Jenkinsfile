@@ -1,24 +1,33 @@
-node{
-    environment{
-        image='nanditapal/git-jenkins-demo'
-        registrycred='dockerhub'
-        app=''
-        pushreg='https://registry.hub.docker.com'
-    }
+pipeline {
     agent any
-    stage('Clone repo'){
-        checkout scm
+    environment{
+        app=''
+        image=''
+        pushreg='nanditapal/git-jenkins-demo'
     }
-    stage('Build') {
-        steps {
-            script{
-                app=docker.build image 
+    stages {
+        stage('Git clone') {
+            steps{
+                sh 'sudo chown root:jenkins /var/run/docker.sock'
+                git 'https://github.com/nandita162/git-jenkins-demo.git'
             }
         }
-    }
-    stage('Push'){
-        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub'){
-            app.push()
+        stage('Build') {
+            steps {
+                script{
+                    image=docker.build pushreg+":latest"
+                }
+            }
+        }
+        stage('Push'){
+            steps{
+                script{
+                    docker.withRegistry('','dockerhub'){
+                        image.push()
+                        image.pull()
+                    }
+                }
+            }
         }
     }
 }
