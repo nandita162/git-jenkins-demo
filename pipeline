@@ -1,0 +1,34 @@
+pipeline {
+    environment{
+        image=''
+        app=''
+        pushreg='nanditapal/git-jenkins-demo'
+    }
+    agent any
+    stages {
+        stage('Git clone') {
+            steps{
+                sh 'sudo chown root:jenkins /var/run/docker.sock'
+                git 'https://github.com/nandita162/git-jenkins-demo.git'
+            }
+        }
+        stage('Build') {
+            steps {
+                script{
+                    app=docker.build pushreg+":latest"
+                }
+            }
+        }
+        stage('Push'){
+            steps{
+                script{
+                    docker.withRegistry('','nanditapal'){
+                        app.push()
+                        //sh 'docker tag git-jenkins:latest nanditapal/git-jenkins-demo:latest'
+                        //sh 'docker push nanditapal/git-jenkins-demo:latest'
+                    }
+                }
+            }
+        }
+    }
+}
